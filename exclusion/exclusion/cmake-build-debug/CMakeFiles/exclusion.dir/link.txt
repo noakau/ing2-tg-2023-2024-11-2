@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2022.2.3\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\exclusion.dir/objects.a
+C:\Users\Noa\Downloads\MinGW\bin\ar.exe qc CMakeFiles\exclusion.dir/objects.a @CMakeFiles\exclusion.dir\objects1.rsp
+C:\Users\Noa\Downloads\MinGW\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\exclusion.dir/objects.a -Wl,--no-whole-archive -o exclusion.exe -Wl,--out-implib,libexclusion.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\exclusion.dir\linklibs.rsp
