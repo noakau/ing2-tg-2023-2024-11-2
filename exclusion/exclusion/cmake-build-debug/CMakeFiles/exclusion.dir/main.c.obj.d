@@ -18,4 +18,7 @@ CMakeFiles/exclusion.dir/main.c.obj: \
  C:/Users/Noa/Downloads/MinGW/lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed/syslimits.h \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/limits.h \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
- C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/malloc.h
+ C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/malloc.h \
+ C:/Users/Noa/Downloads/MinGW/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stdbool.h \
+ C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/string.h \
+ C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/sec_api/string_s.h

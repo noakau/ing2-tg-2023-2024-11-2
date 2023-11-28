@@ -1,131 +1,212 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <string.h>
+typedef struct {
+    int* operations;
+    int num_operations;
+} Station;
 
-// Structure pour représenter une paire d'opérations exclues
+
 typedef struct {
     int operation1;
     int operation2;
-} ExclusionPair;
+} Exclusion;
 
-// Structure pour représenter les informations trouvées dans le fichier
-typedef struct {
-    int maxOperation;
-    int maxStation;
-} FileInformation;
+// Fonction pour vérifier si deux opérations peuvent être affectées à la même station
+int canAssign(int operation1, int operation2, int* stations, Exclusion* exclusions, int numExclusions) {
+    // Vérifiez si l'opération est en conflit avec une autre opération dans les contraintes d'exclusion
+    for (int j = 0; j < numExclusions; j++) {
+        if ((exclusions[j].operation1 == operation1 && exclusions[j].operation2 == operation2) ||
+            (exclusions[j].operation1 == operation2 && exclusions[j].operation2 == operation1)) {
+            return 0; // Les opérations sont en conflit, ne peuvent pas être affectées à la même station
+        }
+    }
 
-typedef struct {
-    int operations;
-    int numOperations;
-} Workstation;
+    // Vérifiez si les opérations ont la même couleur (même station)
+    if (stations[operation1] == stations[operation2]) {
+        return 0;
+    }
 
-// Fonction pour comparer deux stations lors du tri
-int compareStations(const void *a, const void *b) {
-    return (*(Workstation*)a).numOperations - (*(Workstation*)b).numOperations;
+    return 1; // Les opérations peuvent être affectées à la même station
 }
 
-// Fonction pour trouver le nombre maximal d'opérations et de stations à partir d'un fichier
-FileInformation findMaxOperationAndStationFromFile(const char *filename) {
-    FileInformation fileInfo = {0, 0};
-
-    FILE *file = fopen(filename, "r");
+// Fonction pour lire les exclusions à partir d'un fichier texte
+int readExclusions(char* filename, Exclusion** exclusions) {
+    FILE* file = fopen(filename, "r");
     if (file == NULL) {
         perror("Erreur lors de l'ouverture du fichier");
         exit(EXIT_FAILURE);
     }
 
-    int op1, op2, station;
-
-    while (fscanf(file, "%d %d", &op1, &op2) == 2) {
-        if (op1 > fileInfo.maxOperation) {
-            fileInfo.maxOperation = op1;
-        }
-        if (op2 > fileInfo.maxOperation) {
-            fileInfo.maxOperation = op2;
-        }
-
-        // Trouver le numéro de station le plus élevé
-        if (station > fileInfo.maxStation) {
-            fileInfo.maxStation = station;
-        }
+    int numExclusions = 0;
+    int ope1,ope2;
+    // Trouver le nombre total d'exclusions
+    while (fscanf(file, "%d %d", &ope1, &ope2 ) == 2) {
+        numExclusions++;
     }
+    *exclusions = (Exclusion*)malloc(numExclusions * sizeof(Exclusion));
+    for (int i =1; i<= numExclusions; i++){
+        fscanf(file, "%d %d", &(*exclusions)[i].operation1, &(*exclusions)[i].operation2);
+    }
+
 
     fclose(file);
-    return fileInfo;
+
+
+
+    return numExclusions;
 }
 
-// Fonction pour vérifier si deux opérations sont exclues
-int areOperationsExcluded(ExclusionPair exclusionPairs[], int numPairs, int op1, int op2) {
-    for (int i = 0; i < numPairs; i++) {
-        if ((exclusionPairs[i].operation1 == op1 && exclusionPairs[i].operation2 == op2) ||
-            (exclusionPairs[i].operation1 == op2 && exclusionPairs[i].operation2 == op1)) {
-            return 1; // Les opérations sont exclues
+// Fonction pour trouver le numéro de station maximal
+int findMaxStation(Exclusion* exclusions, int numExclusions) {
+    int maxStation = 0;
+
+    for (int i = 0; i < numExclusions; i++) {
+        if (exclusions[i].operation1 > maxStation) {
+            maxStation = exclusions[i].operation1;
+        }
+        if (exclusions[i].operation2 > maxStation) {
+            maxStation = exclusions[i].operation2;
         }
     }
-    return 0; // Les opérations ne sont pas exclues
+
+    return maxStation;
 }
 
-// Fonction pour répartir les opérations sur les stations en respectant les contraintes d'exclusion
-void assignOperationsToStations(ExclusionPair exclusionPairs[], int numPairs, Workstation stations[], int numStations, FileInformation info) {
-    for (int op1 = 1; op1 <= info.maxOperation; op1++) {
-        // Trouver une station pour l'opération op1
-        for (int stationIndex = 0; stationIndex < numStations; stationIndex++) {
-            int canAssign = 1;
+// Fonction pour réduire le nombre de stations en utilisant une coloration de graphe
+int reduceStations(int* stations, Exclusion* exclusions, int numExclusions) {
+    int maxStation = findMaxStation(exclusions, numExclusions);
 
-            // Vérifier si l'opération op1 peut être affectée à cette station
-            for (int op2Index = 0; op2Index < stations[stationIndex].numOperations; op2Index++) {
-                int op2 = stations[stationIndex].operations[op2Index];
-                if (areOperationsExcluded(exclusionPairs, numPairs, op1, op2)) {
-                    canAssign = 0;
+    // Utilisation d'un tableau pour stocker les couleurs (numéro de station) des opérations
+    int* colors = (int*)malloc((maxStation + 1) * sizeof(int));
+
+    // Initialisation des couleurs
+    for (int i = 0; i <= maxStation; i++) {
+        colors[i] = i;
+    }
+
+    // Appliquer la coloration en respectant les contraintes d'exclusion
+    for (int i = 1; i <= maxStation; i++) {
+        for (int j = 1; j <= maxStation; j++) {
+            if (canAssign(i, j, stations, exclusions, numExclusions) && colors[i] != colors[j]) {
+                // Si les opérations peuvent être affectées à la même station et n'ont pas la même couleur,
+                // attribuer la couleur commune à ces deux opérations
+                int commonColor = colors[i];
+                int oldColor = colors[j];
+                for (int k = 1; k <= maxStation; k++) {
+                    if (colors[k] == oldColor) {
+                        colors[k] = commonColor;
+                    }
+                }
+            }
+        }
+    }
+
+    // Compter le nombre de couleurs distinctes (stations)
+    int numColors = 0;
+    for (int i = 1; i <= maxStation; i++) {
+        if (colors[i] == i) {
+            numColors++;
+        }
+    }
+
+    // Libérer la mémoire allouée
+    free(colors);
+
+    return numColors;
+}
+// Fonction pour afficher les opérations attribuées à chaque station en tenant compte des contraintes d'exclusion
+void displayOperationsByStation(Station* stations, Exclusion* exclusions, int numStations, int numExclusions) {
+    printf("Opérations par station en tenant compte des contraintes d'exclusion :\n");
+
+    // Créer un tableau pour stocker les opérations par station
+    int** operationsByStation = (int**)malloc((numStations + 1) * sizeof(int*));
+    for (int i = 1; i <= numStations; i++) {
+        operationsByStation[i] = (int*)malloc((stations[i].num_operations + 1) * sizeof(int));
+        for (int j = 1; j <= stations[i].num_operations; j++) {
+            operationsByStation[i][j] = 0; // Initialiser à 0
+        }
+    }
+
+    // Remplir le tableau des opérations par station en tenant compte des contraintes d'exclusion
+    for (int i = 1; i <= numStations; i++) {
+        for (int j = 1; j <= stations[i].num_operations; j++) {
+            // Vérifier les contraintes d'exclusion
+            int excluded = 0;
+            for (int k = 0; k < numExclusions; k++) {
+                int operationIndex = stations[i].operations[j - 1]; // Indices commencent à 0
+                if ((exclusions[k].operation1 == operationIndex || exclusions[k].operation2 == operationIndex) &&
+                    (stations[i].num_operations > 1)) {
+                    excluded = 1;
                     break;
                 }
             }
 
-            // Si l'opération op1 peut être affectée à cette station, l'ajouter à la station
-            if (canAssign) {
-                stations[stationIndex].operations[stations[stationIndex].numOperations] = op1;
-                stations[stationIndex].numOperations++;
-                break;
+            // Si l'opération peut être affectée à la station et n'a pas la même couleur,
+            // attribuer la couleur commune à cette opération
+            if (!excluded) {
+                operationsByStation[i][j] = 1;
             }
         }
     }
-}
 
-// Fonction pour afficher la répartition des opérations sur les stations
-void printStationAssignmentSorted(Workstation stations[], int numStations) {
-    // Trier les stations par ordre croissant avant l'affichage
-    qsort(stations, numStations, sizeof(Workstation), compareStations);
-
-    for (int i = 0; i < numStations; i++) {
-        printf("Station %d:", i + 1);
-        for (int j = 0; j < stations[i].numOperations; j++) {
-            printf(" %d", stations[i].operations[j]);
+    // Afficher les opérations par station
+    for (int i = 1; i <= numStations; i++) {
+        printf("Station %d : ", i);
+        for (int j = 1; j <= stations[i].num_operations; j++) {
+            if (operationsByStation[i][j] == 1) {
+                printf("%d ", stations[i].operations[j - 1] + 1); // Afficher le numéro de l'opération (ajusté car les indices commencent à 0)
+            }
         }
         printf("\n");
     }
+
+    // Libérer la mémoire allouée
+    for (int i = 1; i <= numStations; i++) {
+        free(operationsByStation[i]);
+    }
+    free(operationsByStation);
 }
-
 int main() {
-    char* filename;
-    printf("entrez le nom du fichier souhaité");
-    scanf("%f", filename);
-    // Trouver le nombre maximal d'opérations et de stations à partir du fichier
-    FileInformation fileInfo = findMaxOperationAndStationFromFile("contraintes.txt");
+    // Demander à l'utilisateur le nom du fichier texte
+    printf("Veuillez entrer le nom du fichier texte : \n ");
 
-    // Utiliser les valeurs trouvées
-    int maxOperation = fileInfo.maxOperation;
-    int maxStation = fileInfo.maxStation;
+    // Allouer dynamiquement de l'espace pour stocker le nom du fichier
+    char* filename = (char*)malloc(100 * sizeof(char));
 
-    // Déclaration et initialisation des stations de travail
-    Workstation stations[maxStation];
-    for (int i = 0; i < maxStation; i++) {
-        stations[i].numOperations = 0;
+    // Vérifier si l'allocation de mémoire a réussi
+    if (filename == NULL) {
+        perror("Erreur lors de l'allocation de mémoire");
+        exit(EXIT_FAILURE);
     }
 
-    // Répartir les opérations sur les stations en respectant les contraintes d'exclusion
-    assignOperationsToStations(fileInfo.exclusionPairs, fileInfo.numPairs, stations, maxStation);
 
-    // Afficher la répartition des opérations sur les stations (triées par ordre croissant)
-    printStationAssignmentSorted(stations, maxStation);é²)
+    gets(filename);
+
+    strcpy(filename,"exclusion.txt");
+    // Lire le nom du fichier à partir de l'utilisateur
+     //scanf("%s", filename);
+    //filename="exclusion.txt";
+
+    // Charger les exclusions à partir du fichier texte
+    Exclusion* exclusions = NULL;
+    int numExclusions = readExclusions(filename, &exclusions);
+
+    // Trouver le numéro de station maximal
+    int numStations = findMaxStation(exclusions, numExclusions);
+
+    // Réduire le nombre de stations en utilisant une coloration de graphe
+    int Stationsreduit = reduceStations(NULL, exclusions, numExclusions);
+
+    printf("Nombre de stations initial : %d\n", numStations);
+    gets(filename);
+    printf("Nombre de stations réduit : %d\n", Stationsreduit);
+
+    // Libérer la mémoire allouée
+    free(filename);
+    free(exclusions);
 
     return 0;
 }
