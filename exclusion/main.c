@@ -15,8 +15,6 @@ int main() {
         numOperations++;
     }
 
-    fclose(exclusionsFile);
-
     // Supposons que vous avez une fonction pour lire les affectations de stations, ou implémentez-la ici
     int station[MAX_OPERATIONS]; // Array to store station assignments for each operation
 
@@ -46,5 +44,4 @@ int main() {
     }
 
     return 0;
-}
-
+}1

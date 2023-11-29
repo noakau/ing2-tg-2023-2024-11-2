@@ -26,6 +26,6 @@ void assignOperationsExclusion(int operations[MAX_OPERATIONS][2], int numOperati
     // Assignation simple pour l'exemple
     for (int i = 0; i < numOperations; i++) {
         assignments[i].operation = i;
-        assignments[i].station = i % 3; // Assignation à une station arbitraire, à ajuster selon vos besoins
+        assignments[i].station = i % 2; // Assignation à une station arbitraire, à ajuster selon vos besoins
     }
 }
