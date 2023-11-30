@@ -41,20 +41,16 @@ int readExclusions(char* filename, Exclusion** exclusions) {
     }
 
     int numExclusions = 0;
-    int ope1,ope2;
+
     // Trouver le nombre total d'exclusions
-    while (fscanf(file, "%d %d", &ope1, &ope2 ) == 2) {
+    while (fscanf(file, "%d %d", &(*exclusions)[numExclusions].operation1, &(*exclusions)[numExclusions].operation2) == 2) {
         numExclusions++;
     }
-    *exclusions = (Exclusion*)malloc(numExclusions * sizeof(Exclusion));
-    for (int i =1; i<= numExclusions; i++){
-        fscanf(file, "%d %d", &(*exclusions)[i].operation1, &(*exclusions)[i].operation2);
-    }
-
 
     fclose(file);
 
-
+    // Allouer dynamiquement le tableau d'exclusions en fonction du nombre total d'exclusions
+    *exclusions = (Exclusion*)malloc(numExclusions * sizeof(Exclusion));
 
     return numExclusions;
 }
@@ -117,64 +113,13 @@ int reduceStations(int* stations, Exclusion* exclusions, int numExclusions) {
 
     return numColors;
 }
-// Fonction pour afficher les opérations attribuées à chaque station en tenant compte des contraintes d'exclusion
-void displayOperationsByStation(Station* stations, Exclusion* exclusions, int numStations, int numExclusions) {
-    printf("Opérations par station en tenant compte des contraintes d'exclusion :\n");
 
-    // Créer un tableau pour stocker les opérations par station
-    int** operationsByStation = (int**)malloc((numStations + 1) * sizeof(int*));
-    for (int i = 1; i <= numStations; i++) {
-        operationsByStation[i] = (int*)malloc((stations[i].num_operations + 1) * sizeof(int));
-        for (int j = 1; j <= stations[i].num_operations; j++) {
-            operationsByStation[i][j] = 0; // Initialiser à 0
-        }
-    }
-
-    // Remplir le tableau des opérations par station en tenant compte des contraintes d'exclusion
-    for (int i = 1; i <= numStations; i++) {
-        for (int j = 1; j <= stations[i].num_operations; j++) {
-            // Vérifier les contraintes d'exclusion
-            int excluded = 0;
-            for (int k = 0; k < numExclusions; k++) {
-                int operationIndex = stations[i].operations[j - 1]; // Indices commencent à 0
-                if ((exclusions[k].operation1 == operationIndex || exclusions[k].operation2 == operationIndex) &&
-                    (stations[i].num_operations > 1)) {
-                    excluded = 1;
-                    break;
-                }
-            }
-
-            // Si l'opération peut être affectée à la station et n'a pas la même couleur,
-            // attribuer la couleur commune à cette opération
-            if (!excluded) {
-                operationsByStation[i][j] = 1;
-            }
-        }
-    }
-
-    // Afficher les opérations par station
-    for (int i = 1; i <= numStations; i++) {
-        printf("Station %d : ", i);
-        for (int j = 1; j <= stations[i].num_operations; j++) {
-            if (operationsByStation[i][j] == 1) {
-                printf("%d ", stations[i].operations[j - 1] + 1); // Afficher le numéro de l'opération (ajusté car les indices commencent à 0)
-            }
-        }
-        printf("\n");
-    }
-
-    // Libérer la mémoire allouée
-    for (int i = 1; i <= numStations; i++) {
-        free(operationsByStation[i]);
-    }
-    free(operationsByStation);
-}
 int main() {
     // Demander à l'utilisateur le nom du fichier texte
     printf("Veuillez entrer le nom du fichier texte : \n ");
 
     // Allouer dynamiquement de l'espace pour stocker le nom du fichier
-    char* filename = (char*)malloc(100 * sizeof(char));
+    char filename = (char*)malloc(100 * sizeof(char));
 
     // Vérifier si l'allocation de mémoire a réussi
     if (filename == NULL) {
@@ -185,9 +130,9 @@ int main() {
 
     gets(filename);
 
-    strcpy(filename,"exclusion.txt");
+    //strcpy(filename,"exclusion.txt");
     // Lire le nom du fichier à partir de l'utilisateur
-     //scanf("%s", filename);
+   //scanf("%s", filename);
     //filename="exclusion.txt";
 
     // Charger les exclusions à partir du fichier texte
@@ -198,11 +143,11 @@ int main() {
     int numStations = findMaxStation(exclusions, numExclusions);
 
     // Réduire le nombre de stations en utilisant une coloration de graphe
-    int Stationsreduit = reduceStations(NULL, exclusions, numExclusions);
+    int reducedStations = reduceStations(NULL, exclusions, numExclusions);
 
     printf("Nombre de stations initial : %d\n", numStations);
     gets(filename);
-    printf("Nombre de stations réduit : %d\n", Stationsreduit);
+    printf("Nombre de stations réduit : %d\n", reducedStations);
 
     // Libérer la mémoire allouée
     free(filename);
