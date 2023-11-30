@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/elise/CLionProjects/exclusion
+# Install script for directory: C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/tempscycleetexclusion")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/exclusion")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,7 +34,7 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Program Files/CodeBlocks/MinGW/bin/objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/Noa/Downloads/MinGW/bin/objdump.exe")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/elise/CLionProjects/exclusion/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

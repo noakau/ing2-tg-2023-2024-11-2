@@ -1,22 +1,32 @@
 //
-// Created by elise on 29/11/2023.
+// Created by Noa on 26/11/2023.
 //
 
-#ifndef EXCLUSION_EXClUSION_H
-#define EXCLUSION_EXClUSION_H
+#ifndef EXCLUSION_EXCLUSION_H
+#define EXCLUSION_EXCLUSION_H
 
-#define MAX_OPERATIONS 35
+#endif //EXCLUSION_EXCLUSION_H
 
-typedef struct {
-    int operation;
-    int station;
-} Assignment;
+/* Structure d'un arc*/
+struct Operation
+{
+    int operation1;
+    //int valeur;
+    int operation2;
+    int maxOperation;
+    struct operation* operation_suivante;
+};
 
-int isExclusionViolated(int operations[MAX_OPERATIONS][2], int numOperations, int station[MAX_OPERATIONS], int op1, int op2);
+/* Alias de pointeur sur un Arc */
+typedef struct Operation* pOperation;
 
-void printExclusionConstraints(int operations[MAX_OPERATIONS][2], int numOperations);
+/* Structure d'un sommet*/
+struct Stations
+{
+    struct Operation* maxOperation;
+    int valeur;
+    char couleur;
+};
 
-void assignOperationsExclusion(int operations[MAX_OPERATIONS][2], int numOperations, Assignment assignments[MAX_OPERATIONS]);
-
-
-#endif //EXCLUSION_EXClUSION_H
+/* Alias de pointeur sur un Sommet */
+typedef struct Sommet* pSommet;
