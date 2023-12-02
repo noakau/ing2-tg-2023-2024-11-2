@@ -3,4 +3,4 @@ project(exclusionnoa C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(exclusionnoa exclusion.h main.c)
+add_executable(exclusionnoa exclusion.h exclusion.c main.c)

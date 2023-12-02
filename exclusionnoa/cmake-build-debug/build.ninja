@@ -49,6 +49,12 @@ cmake_ninja_workdir = C$:/Users/elise/CLionProjects/exclusionnoa/cmake-build-deb
 
 build cmake_object_order_depends_target_exclusionnoa: phony || CMakeFiles/exclusionnoa.dir
 
+build CMakeFiles/exclusionnoa.dir/exclusion.c.obj: C_COMPILER__exclusionnoa_Debug C$:/Users/elise/CLionProjects/exclusionnoa/exclusion.c || cmake_object_order_depends_target_exclusionnoa
+  DEP_FILE = CMakeFiles\exclusionnoa.dir\exclusion.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\exclusionnoa.dir
+  OBJECT_FILE_DIR = CMakeFiles\exclusionnoa.dir
+
 build CMakeFiles/exclusionnoa.dir/main.c.obj: C_COMPILER__exclusionnoa_Debug C$:/Users/elise/CLionProjects/exclusionnoa/main.c || cmake_object_order_depends_target_exclusionnoa
   DEP_FILE = CMakeFiles\exclusionnoa.dir\main.c.obj.d
   FLAGS = -g -std=gnu99
@@ -63,7 +69,7 @@ build CMakeFiles/exclusionnoa.dir/main.c.obj: C_COMPILER__exclusionnoa_Debug C$:
 #############################################
 # Link the executable exclusionnoa.exe
 
-build exclusionnoa.exe: C_EXECUTABLE_LINKER__exclusionnoa_Debug CMakeFiles/exclusionnoa.dir/main.c.obj
+build exclusionnoa.exe: C_EXECUTABLE_LINKER__exclusionnoa_Debug CMakeFiles/exclusionnoa.dir/exclusion.c.obj CMakeFiles/exclusionnoa.dir/main.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\exclusionnoa.dir

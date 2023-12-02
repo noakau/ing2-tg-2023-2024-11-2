@@ -1,49 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-#include <stdbool.h>
 #include <string.h>
-
 #include "exclusion.h"
 
-
 int main() {
-    // Demander à l'utilisateur le nom du fichier texte
-    // printf("Veuillez entrer le nom du fichier texte : \n ");
 
     // Allouer dynamiquement de l'espace pour stocker le nom du fichier
     char* filename = (char*)malloc(100 * sizeof(char));
 
-    // Vérifier si l'allocation de mémoire a réussi
-    if (filename == NULL) {
-        perror("Erreur lors de l'allocation de mémoire");
-        exit(EXIT_FAILURE);
+    // Veuillez noter que vous avez déclaré deux fois 'filename' (une fois en tant que pointeur et une fois en tant que FILE*)
+    // Je corrige cela en renommant le pointeur
+    FILE *file = fopen("exclusion.txt", "r");
+    if (file == NULL) {
+        perror("Erreur lors de l'ouverture du fichier texte");
+        return 1;
     }
 
-
-    gets(filename);
-
-    strcpy(filename,"exclusion.txt");
-    // Lire le nom du fichier à partir de l'utilisateur
-    //scanf("%s", filename);
-    //filename="exclusion.txt";
+    // Obtenir le nom du fichier depuis l'utilisateur
+    printf("Entrez le nom du fichier : ");
+    fgets(filename, 100, stdin);
+    filename[strcspn(filename, "\n")] = '\0';  // Supprimer le caractère de nouvelle ligne de fgets
 
     // Charger les exclusions à partir du fichier texte
     Exclusion* exclusions = NULL;
     int numExclusions = readExclusions(filename, &exclusions);
 
-    printf("entrrez les stations a verifier:\n");
-    int op1;
-    int op2;
-    scanf ("%d %d", &op1, &op2);
-    int resultat = canAssign(op1, op2,exclusions, numExclusions );
-    if (resultat ==1){
-        printf("\n ces operations peuvent etre  dans la meme station.");
-        gets(filename);
-    }
-    else {
-        printf("\n ces operations ne peuvent pas etre  dans la meme station.");
-        gets(filename);
+    printf("Entrez les stations a verifier :\n");
+    int op1, op2;
+    scanf("%d %d", &op1, &op2);
+
+    int resultat = canAssign(op1, op2, exclusions, numExclusions);
+    if (resultat == 1) {
+        printf("\nCes operations peuvent etre dans la meme station.\n");
+    } else {
+        printf("\nCes operations ne peuvent pas etre dans la meme station.\n");
     }
 
     int* operations = NULL;
@@ -51,18 +41,15 @@ int main() {
 
     getDistinctOperations(exclusions, numExclusions, &operations, &num_operations);
 
-    // Utilisez maintenant le tableau operations pour affecter les opérations aux stations
+    // Utiliser maintenant le tableau operations pour affecter les opérations aux stations
     assignOperationsToStations(operations, num_operations, exclusions, numExclusions);
-
-
-
 
     // Libérer la mémoire allouée
     free(filename);
     free(exclusions);
 
     char pourPause[20];
-    gets(pourPause);
+    fgets(pourPause, sizeof(pourPause), stdin);
 
     return 0;
 }
