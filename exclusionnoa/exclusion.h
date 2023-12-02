@@ -5,28 +5,22 @@
 #ifndef EXCLUSIONNOA_EXCLUSION_H
 #define EXCLUSIONNOA_EXCLUSION_H
 
-/* Structure d'un arc*/
-struct Operation
-{
+//structure de station contenant les opérations
+typedef struct {
+    int* operations;
+    int nb_operations;
+} Station;
+
+//structure d'exclusions de teux opérations
+typedef struct {
     int operation1;
-    //int valeur;
     int operation2;
-    int maxOperation;
-    struct operation* operation_suivante;
-};
+} Exclusion;
 
-/* Alias de pointeur sur un Arc */
-typedef struct Operation* pOperation;
-
-/* Structure d'un sommet*/
-struct Stations
-{
-    struct Operation* maxOperation;
-    int valeur;
-    char couleur;
-};
-
-/* Alias de pointeur sur un Sommet */
-typedef struct Sommet* pSommet;
+int canAssign(int operation1, int operation2, Exclusion* exclusions, int numExclusions);
+int readExclusions(char* filename, Exclusion** exclusions);
+int isOperationInArray(int operation, int* array, int size);
+void getDistinctOperations(Exclusion* exclusions, int num_exclusions, int** operations, int* num_operations);
+void assignOperationsToStations(int* operations, int num_operations, Exclusion* exclusions, int numExclusions);
 
 #endif //EXCLUSIONNOA_EXCLUSION_H
