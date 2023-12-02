@@ -128,6 +128,30 @@ exclusion/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\exclusion.dir\build.make CMakeFiles/exclusion.dir/build
 .PHONY : exclusion/fast
 
+exclusion.obj: exclusion.c.obj
+.PHONY : exclusion.obj
+
+# target to build an object file
+exclusion.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\exclusion.dir\build.make CMakeFiles/exclusion.dir/exclusion.c.obj
+.PHONY : exclusion.c.obj
+
+exclusion.i: exclusion.c.i
+.PHONY : exclusion.i
+
+# target to preprocess a source file
+exclusion.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\exclusion.dir\build.make CMakeFiles/exclusion.dir/exclusion.c.i
+.PHONY : exclusion.c.i
+
+exclusion.s: exclusion.c.s
+.PHONY : exclusion.s
+
+# target to generate assembly for a file
+exclusion.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\exclusion.dir\build.make CMakeFiles/exclusion.dir/exclusion.c.s
+.PHONY : exclusion.c.s
+
 main.obj: main.c.obj
 .PHONY : main.obj
 
@@ -161,6 +185,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... exclusion
+	@echo ... exclusion.obj
+	@echo ... exclusion.i
+	@echo ... exclusion.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

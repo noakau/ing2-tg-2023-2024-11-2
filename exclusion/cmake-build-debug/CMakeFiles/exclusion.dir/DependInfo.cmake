@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion/cmake-build-debug/exclusion.c" "CMakeFiles/exclusion.dir/exclusion.c.obj" "gcc" "CMakeFiles/exclusion.dir/exclusion.c.obj.d"
   "C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion/main.c" "CMakeFiles/exclusion.dir/main.c.obj" "gcc" "CMakeFiles/exclusion.dir/main.c.obj.d"
   )
 

@@ -3,4 +3,4 @@ project(exclusion C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(exclusion main.c exclusion.h)
+add_executable(exclusion main.c exclusion.h cmake-build-debug/exclusion.c)

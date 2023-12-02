@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/exclusion.dir/exclusion.c.obj"
+  "CMakeFiles/exclusion.dir/exclusion.c.obj.d"
   "CMakeFiles/exclusion.dir/main.c.obj"
   "CMakeFiles/exclusion.dir/main.c.obj.d"
   "exclusion.exe"

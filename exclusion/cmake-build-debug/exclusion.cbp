@@ -74,6 +74,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion/cmake-build-debug/exclusion.c">
+			<Option target="exclusion"/>
+		</Unit>
 		<Unit filename="C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion/exclusion.h">
 			<Option target="exclusion"/>
 		</Unit>

@@ -1,5 +1,5 @@
-CMakeFiles/exclusion.dir/main.c.obj: \
- C:\Users\Noa\CLionProjects\ing2\ProjetTDG\exclusion\exclusion\main.c \
+CMakeFiles/exclusion.dir/exclusion.c.obj: \
+ C:\Users\Noa\CLionProjects\ing2\ProjetTDG\exclusion\exclusion\cmake-build-debug\exclusion.c \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/stdio.h \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/crtdefs.h \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/_mingw.h \
@@ -22,4 +22,4 @@ CMakeFiles/exclusion.dir/main.c.obj: \
  C:/Users/Noa/Downloads/MinGW/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stdbool.h \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/string.h \
  C:/Users/Noa/Downloads/MinGW/x86_64-w64-mingw32/include/sec_api/string_s.h \
- C:\Users\Noa\CLionProjects\ing2\ProjetTDG\exclusion\exclusion\exclusion.h
+ C:/Users/Noa/CLionProjects/ing2/ProjetTDG/exclusion/exclusion/exclusion.h
