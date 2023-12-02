@@ -1,0 +1,10 @@
+//
+// Created by Noa on 02/12/2023.
+//
+
+#ifndef EXCLUSION_TEMPSDECYCLE_TEMPS_CYCLE_H
+#define EXCLUSION_TEMPSDECYCLE_TEMPS_CYCLE_H
+
+double readTempsCycle();
+
+#endif //EXCLUSION_TEMPSDECYCLE_TEMPS_CYCLE_H
