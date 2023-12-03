@@ -3,4 +3,4 @@ project(exclusionetprcedence C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(exclusionetprcedence main.c)
+add_executable(exclusionetprcedence exclusion.h exclusion.c precedence.h precedence.c operation.h operation.c main.c)
