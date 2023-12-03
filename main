@@ -1,0 +1,199 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "operations.h"
+#include "temps_cycle.h"
+#include "precedenceh.h"
+
+Graphe initialiserGraphe() {
+    Graphe graphe;
+    graphe.numAretes = 0;
+    graphe.aretes = NULL;
+    return graphe;
+}
+
+void libererGraphe(Graphe *graphe) {
+    free(graphe->aretes);
+}
+
+Graphe lireContraintesPrecedence(const char *nomFichier) {
+    FILE *fichier = fopen(nomFichier, "r");
+    if (!fichier) {
+        perror("Erreur lors de l'ouverture du fichier");
+        exit(EXIT_FAILURE);
+    }
+
+    Graphe graphe = initialiserGraphe();
+
+    int de, vers;
+    while (fscanf(fichier, "%d %d", &de, &vers) == 2) {
+        graphe.numAretes++;
+        graphe.aretes = (Arete *)realloc(graphe.aretes, graphe.numAretes * sizeof(Arete));
+        if (graphe.aretes == NULL) {
+            fprintf(stderr, "Erreur d'allocation mémoire\n");
+            exit(EXIT_FAILURE);
+        }
+        graphe.aretes[graphe.numAretes - 1].de = de;
+        graphe.aretes[graphe.numAretes - 1].vers = vers;
+    }
+
+    fclose(fichier);
+    return graphe;
+}
+
+void afficherContraintesPrecedence(const Graphe *graphe) {
+    printf("Contraintes de precedence :\n");
+    for (int i = 0; i < graphe->numAretes; i++) {
+        printf("%d -> %d\n", graphe->aretes[i].de, graphe->aretes[i].vers);
+    }
+}
+
+int readOperations(Operation **operations, int *total_stations) {
+    // Ouvrir le fichier en mode lecture
+    FILE *file = fopen("/home/jules/CLionProjects/temps de cycle/operation.txt", "r");
+    if (file == NULL) {
+        perror("Erreur lors de l'ouverture du fichier");
+        return -1;
+    }
+
+    // Lire le nombre total d'opérations et de stations
+    int total_operations = 0, max_station = 0;
+    while (fscanf(file, "%*d %*f\n") != EOF) {
+        total_operations++;
+    }
+
+    // Réinitialiser le curseur du fichier à la position initiale
+    rewind(file);
+
+    // Allouer de l'espace pour stocker les opérations
+    *operations = malloc(total_operations * sizeof(Operation));
+    if (*operations == NULL) {
+        perror("Erreur lors de l'allocation de mémoire");
+        fclose(file);
+        return -1;
+    }
+
+    // Lire chaque ligne du fichier et stocker les données dans la structure Operation
+    for (int i = 0; i < total_operations; i++) {
+        int result = fscanf(file, "%d %lf\n", &((*operations)[i].operation_number), &((*operations)[i].execution_time));
+        if (result != 2) {
+            fprintf(stderr, "Format de ligne incorrect dans le fichier (%d). Résultat : %d\n", i + 1, result);
+            free(*operations);
+            fclose(file);
+            return -1;
+        }
+
+        // Assigner une station temporaire à chaque opération (à ajuster selon votre logique)
+        (*operations)[i].assigned_station = i % 3;  // Exemple : 3 stations
+        if ((*operations)[i].assigned_station > max_station) {
+            max_station = (*operations)[i].assigned_station;
+        }
+    }
+
+    // Fermer le fichier
+    fclose(file);
+
+    // Retourner le nombre total d'opérations et le nombre total de stations
+    *total_stations = max_station + 1;  // Ajouter 1 car les stations sont numérotées à partir de 0
+    return total_operations;
+}
+
+double readTempsCycle() {
+    // Ouvrir le fichier en mode lecture
+    FILE *file = fopen("/home/jules/CLionProjects/temps de cycle/temps_cycle.txt", "r");
+    if (file == NULL) {
+        perror("Erreur lors de l'ouverture du fichier temps_cycle.txt");
+        return -1.0;  // Valeur par défaut en cas d'erreur
+    }
+
+    // Lire la durée du temps de cycle
+    double tempsCycle;
+    if (fscanf(file, "%lf", &tempsCycle) != 1) {
+        fprintf(stderr, "Format incorrect dans le fichier temps_cycle.txt\n");
+        fclose(file);
+        return -1.0;  // Valeur par défaut en cas d'erreur
+    }
+
+    // Fermer le fichier
+    fclose(file);
+
+    return tempsCycle;
+}
+
+
+int main() {
+    // Lire les opérations
+    Operation *operations;
+    int total_operations, total_stations;
+    total_operations = readOperations(&operations, &total_stations);
+
+    if (total_operations <= 0) {
+        fprintf(stderr, "Erreur lors de la lecture des operations\n");
+        return EXIT_FAILURE;
+    }
+
+    // Lire la durée du temps de cycle
+    double tempsCycle = readTempsCycle();
+    if (tempsCycle < 0.0) {
+        fprintf(stderr, "Erreur lors de la lecture du temps de cycle\n");
+        free(operations);
+        return EXIT_FAILURE;
+    }
+
+    // Vérifier la contrainte de temps de cycle
+    for (int k = 0; k < total_stations; k++) {
+        double total_duration = 0.0;
+        for (int j = 0; j < total_operations; j++) {
+            if (operations[j].assigned_station == k) {
+                total_duration += operations[j].execution_time;
+            }
+        }
+
+        if (total_duration > tempsCycle) {
+            fprintf(stderr, "Contrainte de temps de cycle violée pour la station %d\n", k);
+            free(operations);
+            return EXIT_FAILURE;
+        }
+    }
+
+    // Vérifier la contrainte de temps par station
+    for (int k = 0; k < total_stations; k++) {
+        double total_duration_station = 0.0;
+        for (int j = 0; j < total_operations; j++) {
+            if (operations[j].assigned_station == k) {
+                total_duration_station += operations[j].execution_time;
+            }
+        }
+
+        // Vérifier que le temps total pour la station k est inférieur à 10 secondes
+        if (total_duration_station > 10.0) {
+            fprintf(stderr, "Contrainte de temps par station violée pour la station %d\n", k);
+            free(operations);
+            return EXIT_FAILURE;
+        }
+    }
+
+    // Afficher les données lues
+    printf("Operations lues :\n");
+    for (int i = 0; i < total_operations; i++) {
+        printf("Operation : %d, Temps d'execution : %.2f, Station : %d\n", operations[i].operation_number, operations[i].execution_time, operations[i].assigned_station);
+    }
+
+    printf("Temps de cycle : %.2f secondes\n", tempsCycle);
+
+    // Libérer la mémoire
+    free(operations);
+    // Lire les contraintes de précédence à partir du fichier
+    Graphe graphe = lireContraintesPrecedence("/home/jules/CLionProjects/prece/precedense.txt");
+
+    // Vérifier si le graphe est vide (pas de contraintes)
+    if (graphe.numAretes == 0) {
+        printf("Aucune contrainte de précédence trouvée\n");
+        return 1;  // Retourner un code d'erreur
+    }
+
+    afficherContraintesPrecedence(&graphe);
+
+    libererGraphe(&graphe);
+
+    return EXIT_SUCCESS;
+}
