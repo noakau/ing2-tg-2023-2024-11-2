@@ -165,23 +165,23 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    // Vérifier la contrainte de temps de cycle
-    for (int k = 0; k < total_stations; k++) {
-        double total_duration = 0.0;
-        for (int j = 0; j < total_operations; j++) {
-            if (operations[j].assigned_station == k) {
-                total_duration += operations[j].execution_time;
-            }
-        }
+    // Lire les contraintes de précédence à partir du fichier
+    Graphe graphe = lireContraintesPrecedence("/home/jules/CLionProjects/temps de cycle/precedense.txt");
 
-        if (total_duration > tempsCycle) {
-            fprintf(stderr, "Contrainte de temps de cycle violée pour la station %d\n", k);
-            free(operations);
-            return EXIT_FAILURE;
-        }
+    // Vérifier si le graphe est vide (pas de contraintes)
+    if (graphe.numAretes == 0) {
+        printf("Aucune contrainte de précédence trouvée\n");
+        free(operations);
+        libererGraphe(&graphe);
+        return EXIT_FAILURE;
     }
 
-    // Vérifier la contrainte de temps par station
+    afficherContraintesPrecedence(&graphe);
+
+    // Affecter les opérations aux stations en respectant les contraintes de précédence
+    affecterOperationsStations(operations, total_operations, &graphe);
+
+    // Vérifier les contraintes de temps de cycle pour chaque station
     for (int k = 0; k < total_stations; k++) {
         double total_duration_station = 0.0;
         for (int j = 0; j < total_operations; j++) {
@@ -190,16 +190,17 @@ int main() {
             }
         }
 
-        // Vérifier que le temps total pour la station k est inférieur à 10 secondes
-        if (total_duration_station > 10.0) {
-            fprintf(stderr, "Contrainte de temps par station violée pour la station %d\n", k);
+        // Vérifier que le temps total pour la station k est inférieur à tempsCycle
+        if (total_duration_station > tempsCycle) {
+            fprintf(stderr, "Contrainte de temps de cycle violée pour la station %d\n", k);
+            libererGraphe(&graphe);
             free(operations);
             return EXIT_FAILURE;
         }
     }
 
     // Afficher les données lues
-    printf("Operations lues :\n");
+    printf("Operations affectées aux stations avec contraintes de précédence :\n");
     for (int i = 0; i < total_operations; i++) {
         printf("Operation : %d, Temps d'execution : %.2f, Station : %d\n", operations[i].operation_number, operations[i].execution_time, operations[i].assigned_station);
     }
@@ -207,19 +208,8 @@ int main() {
     printf("Temps de cycle : %.2f secondes\n", tempsCycle);
 
     // Libérer la mémoire
-    free(operations);
-    // Lire les contraintes de précédence à partir du fichier
-    Graphe graphe = lireContraintesPrecedence("/home/jules/CLionProjects/prece/precedense.txt");
-
-    // Vérifier si le graphe est vide (pas de contraintes)
-    if (graphe.numAretes == 0) {
-        printf("Aucune contrainte de précédence trouvée\n");
-        return 1;  // Retourner un code d'erreur
-    }
-
-    afficherContraintesPrecedence(&graphe);
-
     libererGraphe(&graphe);
+    free(operations);
 
     return EXIT_SUCCESS;
 }
