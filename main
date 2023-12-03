@@ -118,7 +118,33 @@ double readTempsCycle() {
 
     return tempsCycle;
 }
+void affecterOperationsStations(Operation *operations, int total_operations, const Graphe *graphe) {
+    int *heureDebut = calloc(total_operations, sizeof(int));
 
+    // Parcourir les opérations dans l'ordre défini par le graphe de précédence
+    for (int i = 0; i < graphe->numAretes; i++) {
+        int de = graphe->aretes[i].de;
+        int vers = graphe->aretes[i].vers;
+
+        // Trouver l'heure de début maximale des opérations précédentes
+        int maxHeureDebut = 0;
+        for (int j = 0; j < total_operations; j++) {
+            if (operations[j].operation_number == de && heureDebut[j] > maxHeureDebut) {
+                maxHeureDebut = heureDebut[j];
+            }
+        }
+
+        // Affecter l'opération à la station en respectant la contrainte de précédence
+        for (int j = 0; j < total_operations; j++) {
+            if (operations[j].operation_number == vers && heureDebut[j] < maxHeureDebut + operations[de - 1].execution_time) {
+                heureDebut[j] = maxHeureDebut + operations[de - 1].execution_time;
+                operations[j].assigned_station = operations[de - 1].assigned_station; // Affecter à la même station
+            }
+        }
+    }
+
+    free(heureDebut);
+}
 
 int main() {
     // Lire les opérations
