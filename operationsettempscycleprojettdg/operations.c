@@ -36,8 +36,8 @@ int readOperations(Operation **operations, int *total_stations) {
             return -1;
         }
 
-        // Assigner une station temporaire à chaque opération (à ajuster selon votre logique)
-        (*operations)[i].assigned_station = i % 3;  // Exemple : 3 stations
+        // Assigner une station temporaire à chaque opération (ajustée pour commencer à 1)
+        (*operations)[i].assigned_station = (i % 2) + 1;  // Commencer à partir de la station 1
         if ((*operations)[i].assigned_station > max_station) {
             max_station = (*operations)[i].assigned_station;
         }
@@ -47,6 +47,6 @@ int readOperations(Operation **operations, int *total_stations) {
     fclose(file);
 
     // Retourner le nombre total d'opérations et le nombre total de stations
-    *total_stations = max_station + 1;  // Ajouter 1 car les stations sont numérotées à partir de 0
+    *total_stations = max_station;
     return total_operations;
 }
