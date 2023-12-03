@@ -5,6 +5,7 @@
 #ifndef PRECEDENCEETTEMPSCYCLE_PRECEDENCE_H
 #define PRECEDENCEETTEMPSCYCLE_PRECEDENCE_H
 
+// Définition des structures Graphe et Arete
 typedef struct {
     int de;
     int vers;

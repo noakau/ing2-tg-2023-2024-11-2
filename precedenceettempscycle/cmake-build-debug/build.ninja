@@ -49,12 +49,6 @@ cmake_ninja_workdir = C$:/Users/elise/CLionProjects/precedenceettempscycle/cmake
 
 build cmake_object_order_depends_target_precedenceettempscycle: phony || CMakeFiles/precedenceettempscycle.dir
 
-build CMakeFiles/precedenceettempscycle.dir/main.c.obj: C_COMPILER__precedenceettempscycle_Debug C$:/Users/elise/CLionProjects/precedenceettempscycle/main.c || cmake_object_order_depends_target_precedenceettempscycle
-  DEP_FILE = CMakeFiles\precedenceettempscycle.dir\main.c.obj.d
-  FLAGS = -g -std=gnu99
-  OBJECT_DIR = CMakeFiles\precedenceettempscycle.dir
-  OBJECT_FILE_DIR = CMakeFiles\precedenceettempscycle.dir
-
 build CMakeFiles/precedenceettempscycle.dir/operation.c.obj: C_COMPILER__precedenceettempscycle_Debug C$:/Users/elise/CLionProjects/precedenceettempscycle/operation.c || cmake_object_order_depends_target_precedenceettempscycle
   DEP_FILE = CMakeFiles\precedenceettempscycle.dir\operation.c.obj.d
   FLAGS = -g -std=gnu99
@@ -73,6 +67,12 @@ build CMakeFiles/precedenceettempscycle.dir/precedence.c.obj: C_COMPILER__preced
   OBJECT_DIR = CMakeFiles\precedenceettempscycle.dir
   OBJECT_FILE_DIR = CMakeFiles\precedenceettempscycle.dir
 
+build CMakeFiles/precedenceettempscycle.dir/main.c.obj: C_COMPILER__precedenceettempscycle_Debug C$:/Users/elise/CLionProjects/precedenceettempscycle/main.c || cmake_object_order_depends_target_precedenceettempscycle
+  DEP_FILE = CMakeFiles\precedenceettempscycle.dir\main.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\precedenceettempscycle.dir
+  OBJECT_FILE_DIR = CMakeFiles\precedenceettempscycle.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target precedenceettempscycle
@@ -81,7 +81,7 @@ build CMakeFiles/precedenceettempscycle.dir/precedence.c.obj: C_COMPILER__preced
 #############################################
 # Link the executable precedenceettempscycle.exe
 
-build precedenceettempscycle.exe: C_EXECUTABLE_LINKER__precedenceettempscycle_Debug CMakeFiles/precedenceettempscycle.dir/main.c.obj CMakeFiles/precedenceettempscycle.dir/operation.c.obj CMakeFiles/precedenceettempscycle.dir/tempscycle.c.obj CMakeFiles/precedenceettempscycle.dir/precedence.c.obj
+build precedenceettempscycle.exe: C_EXECUTABLE_LINKER__precedenceettempscycle_Debug CMakeFiles/precedenceettempscycle.dir/operation.c.obj CMakeFiles/precedenceettempscycle.dir/tempscycle.c.obj CMakeFiles/precedenceettempscycle.dir/precedence.c.obj CMakeFiles/precedenceettempscycle.dir/main.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\precedenceettempscycle.dir

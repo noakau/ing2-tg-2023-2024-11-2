@@ -3,6 +3,6 @@ project(precedenceettempscycle C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(precedenceettempscycle main.c operation.c tempscycle.c precedence.c)
+add_executable(precedenceettempscycle operation.h tempscycle.h precedence.h operation.c tempscycle.c precedence.c main.c)
 
 

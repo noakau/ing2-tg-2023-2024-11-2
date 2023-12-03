@@ -5,10 +5,8 @@
 #include "precedence.h"
 
 int main() {
-    // Lire les contraintes de précédence à partir du fichier
     Graphe graphe = lireContraintesPrecedence("precedence.txt");
 
-    // Vérifier si le graphe est vide (pas de contraintes)
     if (graphe.numAretes == 0) {
         printf("Aucune contrainte de précédence trouvée\n");
         return 1;  // Retourner un code d'erreur
@@ -16,22 +14,21 @@ int main() {
 
     afficherContraintesPrecedence(&graphe);
 
-    // Lire la durée du temps de cycle
-    double tempsCycle = readTempsCycle();
-    if (tempsCycle < 0.0) {
-        fprintf(stderr, "Erreur lors de la lecture du temps de cycle\n");
-        libererGraphe(&graphe);  // Libérer la mémoire avant de quitter en cas d'erreur
+    double tempsCycle;
+    tempsCycle = readTempsCycle();
+    if (tempsCycle <= 0.0) {
+        fprintf(stderr, "Erreur : Le temps de cycle doit être une valeur positive\n");
         return EXIT_FAILURE;
     }
 
-    // Lire les opérations
     Operation *operations;
     int total_operations, total_stations;
+
     total_operations = readOperations(&operations, &total_stations);
 
     if (total_operations <= 0) {
         fprintf(stderr, "Erreur lors de la lecture des operations\n");
-        libererGraphe(&graphe);  // Libérer la mémoire avant de quitter en cas d'erreur
+        libererGraphe(&graphe);
         return EXIT_FAILURE;
     }
 
@@ -44,23 +41,58 @@ int main() {
             }
         }
 
-        // Vérifier que le temps total pour la station k est inférieur à 10 secondes
-        if (total_duration_station > 10.0) {
-            fprintf(stderr, "Contrainte de temps par station violee pour la station %d\n", k);
+        // Vérifier que le temps total pour la station k est inférieur au temps de cycle
+        if (total_duration_station > tempsCycle) {
+            fprintf(stderr, "Contrainte de temps par station violée pour la station %d\n", k);
             free(operations);
             libererGraphe(&graphe);
             return EXIT_FAILURE;
         }
     }
 
-    // Afficher les données lues
-    printf("Operations lues :\n");
+    int *operationOrder = ordonnerOperations(&graphe, operations, total_operations);
+    if (operationOrder == NULL) {
+        fprintf(stderr, "Erreur lors de l'ordonnancement des opérations\n");
+        free(operations);
+        libererGraphe(&graphe);
+        return EXIT_FAILURE;
+    }
+
+    // Répartition des opérations dans les stations
+    int *stationDurations = (int *)calloc(total_stations, sizeof(int));
+    int stationIndex = 0;
+
     for (int i = 0; i < total_operations; i++) {
-        printf("Operation : %d, Temps d'execution : %.2f, Station : %d\n", operations[i].operation_number, operations[i].execution_time, operations[i].assigned_station);
+        int operationIndex = operationOrder[i];
+        int currentStation = stationIndex % total_stations;
+
+        // Vérifier si le temps total de la station dépasse le temps de cycle
+        if ((int)(stationDurations[currentStation] + operations[operationIndex].execution_time) > (int)tempsCycle) {
+            // Créer une nouvelle station si nécessaire
+            stationIndex++;
+            currentStation = stationIndex % total_stations;
+        }
+
+        // Affecter l'opération à la station actuelle
+        operations[operationIndex].assigned_station = currentStation;
+        stationDurations[currentStation] += operations[operationIndex].execution_time;
+    }
+
+    // Afficher les opérations ordonnées et réparties dans les stations
+    printf("Operations ordonnees et reparties dans les stations :\n");
+    for (int i = 0; i < total_operations; i++) {
+        int index = operationOrder[i];
+        printf("Operation : %d, Temps d'execution : %.2f, Station : %d\n",
+               operations[index].operation_number, operations[index].execution_time,
+               operations[index].assigned_station);
     }
 
     printf("Temps de cycle : %.2f secondes\n", tempsCycle);
 
+    // Libérer la mémoire
+    free(operationOrder);
+    free(stationDurations);
+    free(operations);
     libererGraphe(&graphe);
 
     return 0;
