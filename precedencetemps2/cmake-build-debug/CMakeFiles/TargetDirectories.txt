@@ -1,0 +1,3 @@
+C:/Users/elise/CLionProjects/precedencetemps2/cmake-build-debug/CMakeFiles/precedencetemps2.dir
+C:/Users/elise/CLionProjects/precedencetemps2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/elise/CLionProjects/precedencetemps2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
