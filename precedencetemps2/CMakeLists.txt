@@ -3,4 +3,4 @@ project(precedencetemps2 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(precedencetemps2 main.c)
+add_executable(precedencetemps2 precedenceettempscycle.h main.c)
